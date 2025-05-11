@@ -22,11 +22,11 @@ Cross-platform IPTV media player built with Electron and React. Watch your favor
 - [video.js](https://videojs.com/) – Media playback
 - [`m3u8-parser`](https://github.com/videojs/m3u8-parser) – Playlist parsing
 
-## Development Setup (macOS)
+## Development Setup (Windows, macOS, Linux)
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/tootallderr/PlayerPlayer.git
+   git clone https://github.com/your-username/PlayerPlayer
    cd crossplay-iptv
    ```
 
@@ -41,29 +41,46 @@ Cross-platform IPTV media player built with Electron and React. Watch your favor
    ```
    This will launch the app in development mode. The Electron window should open automatically. If not, run `npm run electron` in a separate terminal.
 
-## Building the Application (macOS)
+## Building the Application
 
-To create a production-ready macOS app (a `.app` bundle):
+To create a production-ready app for your platform:
 
-```bash
-npm run build:mac
-```
+- **Windows:**
+  ```bash
+  npm run build:win
+  ```
+  The built `.exe` installer or portable app will be in the `dist` or `out` directory.
 
-The built application will be located in the `dist` or `out` directory (check your project's build output folder). You can open the `.app` file directly or move it to your `/Applications` folder.
+- **macOS:**
+  ```bash
+  npm run build:mac
+  ```
+  The built `.app` bundle will be in the `dist` or `out` directory.
 
-## Usage Instructions (macOS)
+- **Linux:**
+  ```bash
+  npm run build:linux
+  ```
+  The built `.AppImage`, `.deb`, or other Linux package will be in the `dist` or `out` directory.
+
+Check your project's build output folder for the final application.
+
+## Usage Instructions
 
 1. **Launch the application:**  
-   Double-click the CrossPlay IPTV `.app` file, or run it from the terminal:
-   ```bash
-   open dist/CrossPlay\ IPTV.app
-   ```
+   - **Windows:** Double-click the `.exe` file or run it from the terminal.
+   - **macOS:** Double-click the `.app` file, or run:
+     ```bash
+     open dist/CrossPlay\ IPTV.app
+     ```
+   - **Linux:** Run the `.AppImage` or install the `.deb` package, then launch from your applications menu or terminal.
+
 2. **Default playlists:**  
    On first launch, several preset IPTV playlists will load automatically.
 
 3. **Add a new playlist:**  
    - Enter a playlist URL in the input field and click "Add URL".
-   - Or click "Open Local Files" to select M3U/M3U8 files from your Mac.
+   - Or click "Open Local Files" to select M3U/M3U8 files from your device.
 
 4. **Browse and play channels:**  
    - Browse channels by category in the sidebar.
@@ -74,7 +91,11 @@ The built application will be located in the `dist` or `out` directory (check yo
    - Switch between dark and light mode using the button in the header.
 
 **Note:**  
-If you encounter a security warning when opening the app, right-click the `.app` and select "Open" to bypass Gatekeeper for unsigned apps.
+- On macOS, if you encounter a security warning when opening the app, right-click the `.app` and select "Open" to bypass Gatekeeper for unsigned apps.
+- On Linux, you may need to give execute permission to the `.AppImage` file:
+  ```bash
+  chmod +x CrossPlay-IPTV.AppImage
+  ```
 
 ## Default Playlists
 
@@ -87,4 +108,3 @@ The application includes the following default playlists:
 - IPTV.org - US Channels
 - GitHub IPTV Big List
 
-"# PlayerPlayer" 
