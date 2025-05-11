@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrossPlay IPTV</title>
+  <link rel="icon" type="image/png" href="./icon.png" />
+</head>
+<body>  <div id="root"></div>
+  <script>
+    // This script runs before any modules to help with XHR header injection
+    (function() {
+      // Store original XHR open method
+      const originalOpen = XMLHttpRequest.prototype.open;
+      
+      // Common headers for IPTV streams
+      const defaultHeaders = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
+      };
+      
+      // Override XHR open method to allow header injection
+      XMLHttpRequest.prototype.open = function() {
+        const result = originalOpen.apply(this, arguments);
+        
+        // Check if this is likely a media request
+        const url = arguments[1];
+        if (url && (
+            url.includes('.m3u8') || 
+            url.includes('.ts') || 
+            url.includes('stream') ||
+            url.includes('live')
+        )) {
+          // Set a flag on this XHR that it's a media request
+          this._isMediaRequest = true;
+          
+          // Apply default headers for media
+          Object.keys(defaultHeaders).forEach(header => {
+            this.setRequestHeader(header, defaultHeaders[header]);
+          });
+        }
+        
+        return result;
+      };
+      
+      // Ensure withCredentials is set for relevant requests
+      const originalSend = XMLHttpRequest.prototype.send;
+      XMLHttpRequest.prototype.send = function() {
+        if (this._isMediaRequest) {
+          // Don't send cookies for CORS requests
+          this.withCredentials = false;
+        }
+        return originalSend.apply(this, arguments);
+      };
+    })();
+  </script>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>

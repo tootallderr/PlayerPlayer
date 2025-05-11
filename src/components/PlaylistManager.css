@@ -1,0 +1,103 @@
+.playlist-manager {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.playlist-manager h2 {
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.playlist-manager h3 {
+  margin: 16px 0 8px;
+  font-size: 1rem;
+}
+
+.playlist-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.url-input {
+  display: flex;
+  gap: 8px;
+}
+
+.url-input input {
+  flex: 1;
+}
+
+.file-button {
+  width: 100%;
+}
+
+.loading-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.loading-spinner-small {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spinner 1s linear infinite;
+}
+
+.playlists-list {
+  margin-top: 16px;
+}
+
+.playlists-list ul {
+  list-style: none;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+}
+
+.playlists-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.playlists-list li:last-child {
+  border-bottom: none;
+}
+
+.playlist-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.remove-button {
+  background: none;
+  color: var(--text-color);
+  border: none;
+  padding: 0 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.remove-button:hover {
+  color: #ff5555;
+}
+
+.no-playlists {
+  color: #888;
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 12px 0;
+}

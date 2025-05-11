@@ -1,0 +1,73 @@
+{
+  "name": "crossplay-iptv",
+  "version": "1.0.0",
+  "description": "Cross-platform IPTV Player with playlist merging and playback controls",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k \"npm run dev:vite\" \"npm run dev:electron\"",
+    "dev:vite": "vite",
+    "dev:electron": "cross-env NODE_ENV=development electron .",
+    "build": "vite build",
+    "build:win": "npm run build && electron-builder --win",
+    "build:win-quick": "npm run build && electron-builder --win --dir --config.win.icon=false",
+    "build:mac": "npm run build && electron-builder --mac",
+    "build:linux": "npm run build && electron-builder --linux",
+    "build:exe": "npm run build && electron-builder --win --dir",
+    "package": "npm run build && electron-builder --win --publish never",
+    "preview": "vite preview",
+    "generate-icons": "node scripts/generate-icons.js",
+    "debug": "node scripts/debug-helper.js",
+    "fix-build": "npm run build && node scripts/debug-helper.js && npm run build:exe"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.4.1",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron": "^36.2.0",
+    "electron-builder": "^26.0.12",
+    "electron-icon-builder": "^2.0.1",
+    "sharp": "^0.34.1",
+    "vite": "^6.3.5",
+    "wait-on": "^8.0.3"
+  },
+  "dependencies": {
+    "@videojs/http-streaming": "^3.17.0",
+    "hls.js": "^1.6.2",
+    "m3u8-parser": "^7.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "video.js": "^8.22.0"
+  },
+  "build": {
+    "appId": "com.crossplay.iptv",
+    "productName": "CrossPlay IPTV",
+    "files": [
+      "dist/**/*",
+      "electron/**/*"
+    ],
+    "directories": {
+      "buildResources": "public",
+      "output": "release"
+    },
+    "mac": {
+      "category": "public.app-category.video",
+      "target": "dmg",
+      "icon": "public/icon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Video"
+    }
+  }
+}

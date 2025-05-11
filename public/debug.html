@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CrossPlay IPTV - Debug Mode</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f0f0f0;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2a66d8;
+    }
+    button {
+      background-color: #2a66d8;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #1a56c8;
+    }
+    .log {
+      background-color: #f8f8f8;
+      border: 1px solid #ddd;
+      padding: 10px;
+      border-radius: 4px;
+      font-family: monospace;
+      margin-top: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .success { color: green; }
+    .error { color: red; }
+    .info { color: blue; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CrossPlay IPTV - Debug Mode</h1>
+    <p>Use this page to test core functionality and diagnose issues.</p>
+    
+    <h2>Environment Tests</h2>
+    <div>
+      <button id="testElectron">Test Electron API</button>
+      <button id="testFs">Test File System Access</button>
+      <button id="testPreload">Test Preload Script</button>
+    </div>
+    
+    <h2>Component Tests</h2>
+    <div>
+      <button id="testVideo">Test Basic Video</button>
+      <button id="testHls">Test HLS Playback</button>
+      <button id="testPlaylist">Test Playlist Parsing</button>
+    </div>
+    
+    <div class="log" id="logArea">
+      <!-- Logs will be displayed here -->
+      <div class="info">Debug console ready...</div>
+    </div>
+  </div>
+
+  <script>
+    // Helper function to log messages
+    function log(message, type = 'info') {
+      const logArea = document.getElementById('logArea');
+      const logEntry = document.createElement('div');
+      logEntry.className = type;
+      logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+      logArea.appendChild(logEntry);
+      logArea.scrollTop = logArea.scrollHeight;
+    }
+
+    // Test if we're running in Electron
+    document.getElementById('testElectron').addEventListener('click', () => {
+      if (window.electron) {
+        log('✅ Electron API is available', 'success');
+        log(`Electron API methods: ${Object.keys(window.electron).join(', ')}`, 'info');
+      } else {
+        log('❌ Electron API is not available', 'error');
+      }
+    });
+
+    // Test file system access
+    document.getElementById('testFs').addEventListener('click', async () => {
+      try {
+        if (!window.electron) {
+          log('❌ Cannot test file system: Electron API not available', 'error');
+          return;
+        }
+        
+        log('Testing file system access...', 'info');
+        try {
+          const result = await window.electron.selectPlaylistFiles();
+          log(`File selection result: ${JSON.stringify(result)}`, 'success');
+        } catch (error) {
+          log(`File selection error: ${error.message}`, 'error');
+        }
+      } catch (error) {
+        log(`Test failed: ${error.message}`, 'error');
+      }
+    });
+
+    // Test preload functionality
+    document.getElementById('testPreload').addEventListener('click', () => {
+      log('Testing preload script functionality...', 'info');
+      
+      // List expected IPC methods
+      const expectedMethods = [
+        'selectPlaylistFiles',
+        'readFile',
+        'setRequestHeaders',
+        'setStreamHeaders',
+        'onDevMode'
+      ];
+      
+      if (!window.electron) {
+        log('❌ Preload test failed: Electron API not available', 'error');
+        return;
+      }
+      
+      const missingMethods = expectedMethods.filter(method => !window.electron[method]);
+      
+      if (missingMethods.length === 0) {
+        log('✅ All expected IPC methods are available', 'success');
+      } else {
+        log(`❌ Missing IPC methods: ${missingMethods.join(', ')}`, 'error');
+      }
+    });
+
+    // Test basic video playback
+    document.getElementById('testVideo').addEventListener('click', () => {
+      log('Testing basic video playback...', 'info');
+      
+      // Clean up any previous test
+      const oldVideo = document.getElementById('testVideoElement');
+      if (oldVideo) {
+        oldVideo.remove();
+      }
+      
+      const videoContainer = document.createElement('div');
+      videoContainer.style.marginTop = '20px';
+      videoContainer.innerHTML = `
+        <video id="testVideoElement" controls width="400" height="225">
+          <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      `;
+      
+      document.querySelector('.container').insertBefore(videoContainer, document.querySelector('.log'));
+      
+      const video = document.getElementById('testVideoElement');
+      video.onerror = () => log(`❌ Video error: ${video.error.message}`, 'error');
+      video.onloadeddata = () => log('✅ Video loaded successfully', 'success');
+    });
+
+    // Test HLS playback
+    document.getElementById('testHls').addEventListener('click', async () => {
+      log('Testing HLS playback...', 'info');
+      
+      // First check if HLS.js is available or load it dynamically
+      if (!window.Hls) {
+        log('Loading HLS.js...', 'info');
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/hls.js@latest';
+        script.onload = () => {
+          log('✅ HLS.js loaded', 'success');
+          setupHlsTest();
+        };
+        script.onerror = () => {
+          log('❌ Failed to load HLS.js', 'error');
+        };
+        document.head.appendChild(script);
+      } else {
+        setupHlsTest();
+      }
+      
+      function setupHlsTest() {
+        // Clean up any previous test
+        const oldVideo = document.getElementById('testHlsElement');
+        if (oldVideo) {
+          if (oldVideo.hlsPlayer) {
+            oldVideo.hlsPlayer.destroy();
+          }
+          oldVideo.remove();
+        }
+        
+        const videoContainer = document.createElement('div');
+        videoContainer.style.marginTop = '20px';
+        videoContainer.innerHTML = `
+          <video id="testHlsElement" controls width="400" height="225"></video>
+        `;
+        
+        document.querySelector('.container').insertBefore(videoContainer, document.querySelector('.log'));
+        
+        const video = document.getElementById('testHlsElement');
+        
+        // Test HLS.js
+        if (window.Hls && Hls.isSupported()) {
+          log('✅ HLS.js is supported', 'success');
+          
+          // Public test stream
+          const streamUrl = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+          
+          try {
+            const hls = new Hls();
+            video.hlsPlayer = hls;
+            
+            hls.on(Hls.Events.ERROR, (event, data) => {
+              log(`❌ HLS error: ${data.type} - ${data.details}`, 'error');
+            });
+            
+            hls.on(Hls.Events.MANIFEST_PARSED, () => {
+              log('✅ HLS manifest parsed successfully', 'success');
+              video.play().catch(e => log(`❌ Play error: ${e.message}`, 'error'));
+            });
+            
+            hls.loadSource(streamUrl);
+            hls.attachMedia(video);
+            
+            log(`Loading HLS stream: ${streamUrl}`, 'info');
+          } catch (error) {
+            log(`❌ HLS setup error: ${error.message}`, 'error');
+          }
+        } else {
+          log('❌ HLS.js is not supported', 'error');
+          
+          // Try native HLS support
+          if (video.canPlayType('application/vnd.apple.mpegurl')) {
+            video.src = 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8';
+            log('Testing native HLS support instead', 'info');
+          } else {
+            log('❌ Native HLS is also not supported', 'error');
+          }
+        }
+      }
+    });
+
+    // Test playlist parsing
+    document.getElementById('testPlaylist').addEventListener('click', async () => {
+      log('Testing playlist parsing...', 'info');
+      
+      const sampleM3u = `#EXTM3U
+#EXTINF:-1 tvg-id="example1" tvg-name="Example 1" tvg-logo="http://example.com/logo1.png" group-title="News",Example Channel 1
+http://example.com/stream1.m3u8
+#EXTINF:-1 tvg-id="example2" tvg-name="Example 2" tvg-logo="http://example.com/logo2.png" group-title="Sports",Example Channel 2
+http://example.com/stream2.m3u8`;
+      
+      try {
+        // Create simple parser function
+        function parseM3uBasic(content) {
+          const items = [];
+          const lines = content.split('\n');
+          let currentItem = null;
+          
+          for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            
+            if (line.startsWith('#EXTINF:')) {
+              // Start a new channel
+              currentItem = { attributes: {} };
+              
+              // Parse name
+              const nameMatch = line.match(/,([^,]+)$/);
+              if (nameMatch) {
+                currentItem.name = nameMatch[1].trim();
+              }
+              
+              // Parse TVG ID
+              const tvgIdMatch = line.match(/tvg-id="([^"]*)"/);
+              if (tvgIdMatch) {
+                currentItem.tvgId = tvgIdMatch[1];
+              }
+              
+              // Parse group
+              const groupMatch = line.match(/group-title="([^"]*)"/);
+              if (groupMatch) {
+                currentItem.group = { title: groupMatch[1] };
+              }
+            } else if (line.length > 0 && !line.startsWith('#') && currentItem) {
+              // This is the URL
+              currentItem.url = line;
+              items.push(currentItem);
+              currentItem = null;
+            }
+          }
+          
+          return { items };
+        }
+        
+        const result = parseM3uBasic(sampleM3u);
+        log(`✅ Basic parsing successful, found ${result.items.length} channels`, 'success');
+        log(`First channel: ${JSON.stringify(result.items[0])}`, 'info');
+      } catch (error) {
+        log(`❌ Parsing error: ${error.message}`, 'error');
+      }
+    });
+
+    // Log initial environment info
+    window.addEventListener('load', () => {
+      log(`User Agent: ${navigator.userAgent}`, 'info');
+      if (navigator.userAgent.includes('Electron')) {
+        log('✅ Running in Electron environment', 'success');
+      } else {
+        log('❌ Not running in Electron environment', 'error');
+      }
+      
+      // Check for Electron API
+      if (window.electron) {
+        log('✅ Electron API detected', 'success');
+      } else {
+        log('❌ Electron API not detected', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+.video-player-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--secondary-color);
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  min-height: 450px; /* Increased minimum height */
+  flex: 1;
+}
+
+/* Styles for DirectVideoPlayer */
+.direct-player-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.direct-video-element {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  background-color: #000;
+  object-fit: contain;
+}
+
+/* Make sure the player takes the full container size */
+[data-vjs-player] {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex: 1;
+}
+
+.video-js {
+  width: 100% !important;
+  height: 100% !important;
+  position: relative;
+  min-height: 400px;
+  aspect-ratio: 16/9;
+}
+
+/* Ensure bigger play button */
+.video-js .vjs-big-play-button {
+  font-size: 3em !important;
+  line-height: 2em !important;
+  height: 2em !important;
+  width: 2em !important;
+  border-radius: 50% !important;
+  background-color: rgba(43, 51, 63, 0.7) !important;
+  border: 0.06666em solid #fff !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  display: block !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: scale(1) !important;
+  position: absolute !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Force center position for big play button */
+.vjs-big-play-centered .vjs-big-play-button {
+  top: 50% !important;
+  left: 50% !important;
+  margin-left: -1em !important;
+  margin-top: -1em !important;
+}
+
+/* Ensure control bar is always visible */
+.video-js .vjs-control-bar {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transition: none !important;
+  background-color: rgba(43, 51, 63, 0.7) !important;
+  height: 3em !important;
+  z-index: 5 !important;
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+}
+
+/* Override any attempts to hide the control bar */
+.video-js.vjs-user-inactive .vjs-control-bar {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Show control bar on hover with higher opacity */
+.video-js:hover .vjs-control-bar {
+  visibility: visible !important;
+  opacity: 1 !important;
+  background-color: rgba(43, 51, 63, 0.9) !important;
+}
+
+/* Make sure all control buttons are visible */
+.video-js .vjs-button {
+  color: white !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  cursor: pointer !important;
+}
+
+/* Ensure control bar doesn't hide after play starts */
+.video-js.vjs-has-started .vjs-control-bar {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: flex !important;
+}
+
+/* Make play button more visible */
+.video-js .vjs-play-control {
+  font-size: 1.2em !important;
+  color: white !important;
+}
+
+/* Improve visibility of volume control */
+.video-js .vjs-volume-panel {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.video-title-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  z-index: 2;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.video-player-container:hover .video-title-overlay {
+  opacity: 0;
+}
+
+/* Custom video.js controls */
+.video-js .vjs-control-bar {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.video-js .vjs-big-play-button {
+  background-color: rgba(74, 144, 226, 0.7);
+  border-color: white;
+}
+
+.video-js:hover .vjs-big-play-button {
+  background-color: rgba(74, 144, 226, 1);
+}
+
+.video-loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 3;
+}
+
+.video-loading-overlay .loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spinner 1s linear infinite;
+}
+
+.video-loading-overlay p {
+  margin-top: 16px;
+  font-size: 16px;
+}
+
+.no-media-selected {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  color: var(--text-color);
+  background-color: var(--secondary-color);
+}
+
+.no-media-selected div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.no-media-selected svg {
+  opacity: 0.5;
+}
+
+/* Additional DirectVideoPlayer styles */
+.custom-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  z-index: 5;
+}
+
+.play-pause-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.play-pause-button:hover {
+  opacity: 1;
+}

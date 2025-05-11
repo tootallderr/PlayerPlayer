@@ -1,0 +1,143 @@
+.playlist-view {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.playlist-header {
+  padding: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.playlist-header h2 {
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+}
+
+.search-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-container input {
+  width: 100%;
+  padding-right: 30px;
+}
+
+.clear-search {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  padding: 0;
+}
+
+.no-channels {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  padding: 0 16px;
+}
+
+.channels-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.channel-group {
+  margin-bottom: 8px;
+}
+
+.group-title {
+  padding: 8px 16px;
+  background-color: var(--secondary-color);
+  font-weight: bold;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.channel-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-color);
+  position: relative; /* For positioning the play button */
+}
+
+.channel-item:hover {
+  background-color: var(--hover-color);
+}
+
+.channel-item.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Play button styling */
+.channel-play-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  color: white;
+  margin-left: 8px;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.channel-play-button:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.channel-item.active .channel-play-button {
+  background-color: #22cc66;
+  opacity: 1;
+}
+
+.channel-logo {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.channel-logo img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.channel-logo.placeholder {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.channel-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9rem;
+}
